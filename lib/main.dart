@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'core/di/injection.dart';
 import 'core/routing/app_router.dart';
-import 'core/config/env_config.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,12 +12,18 @@ void main() {
 class FinalProjectApp extends StatelessWidget {
   const FinalProjectApp({super.key});
 
+  final String myNim = '20123020'; 
+
   @override
   Widget build(BuildContext context) {
+    final useDarkMode = AppTheme.isDarkMode(myNim);
+
     return MaterialApp.router(
-      debugShowCheckedModeBanner: !EnvConfig.isProduction,
+      debugShowCheckedModeBanner: false,
       title: 'UAS Mobile Lanjut',
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: useDarkMode ? ThemeMode.dark : ThemeMode.light,
       routerConfig: AppRouter.router,
     );
   }
