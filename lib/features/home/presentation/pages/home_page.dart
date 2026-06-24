@@ -6,13 +6,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Mengambil status apakah aplikasi sedang dalam mode gelap atau terang
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // Jika PROD wajib Biru Gelap, jika DEV menggunakan warna bebas (misal grey)
+    final primaryColor = EnvConfig.isProduction ? const Color(0xFF0D1B2A) : Colors.blueGrey;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('UAS App [${EnvConfig.environment}]'),
-        backgroundColor: EnvConfig.isProduction ? Colors.green : Colors.blueGrey,
+        title: Text(EnvConfig.appName), // Menampilkan Nama Dinamis Flavor Anti-AI
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
       ),
       body: Center(
         child: Column(
@@ -21,30 +22,22 @@ class HomePage extends StatelessWidget {
             Icon(
               Icons.rocket_launch, 
               size: 100, 
-              color: isDark ? Colors.orangeAccent : Colors.blueAccent,
+              color: EnvConfig.isProduction ? Colors.amber : Colors.blueAccent,
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Skeleton Project Siap!', 
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              EnvConfig.appName, 
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
             Text(
-              'Base URL: ${EnvConfig.baseUrl}', 
-              style: const TextStyle(color: Colors.grey),
+              'Environment Mode: ${EnvConfig.environment}', 
+              style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
             ),
-            const SizedBox(height: 20),
-            
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: isDark ? Colors.grey[800] : Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'Mode Aplikasi: ${isDark ? "Dark Mode (NIM Ganjil)" : "Light Mode (NIM Genap)"}',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+            const SizedBox(height: 5),
+            Text(
+              'Base URL: ${EnvConfig.baseUrl}', 
+              style: const TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
         ),
