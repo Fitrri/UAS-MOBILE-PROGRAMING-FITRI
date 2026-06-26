@@ -9,7 +9,7 @@ import '../../features/home/data/data_sources/news_local_data_source.dart';
 // Import relative path untuk repository baru kamu
 import '../../features/home/domain/repositories/news_repository.dart';
 import '../../features/home/data/repositories/news_repository_impl.dart';
-
+import '../../features/home/presentation/cubit/news_cubit.dart';
 final locator = GetIt.instance;
 
 Future<void> setupLocator() async {
@@ -43,4 +43,6 @@ Future<void> setupLocator() async {
       localDataSource: locator(),
     ),
   );
+
+  locator.registerFactory<NewsCubit>(() => NewsCubit(repository: locator()));
 }
