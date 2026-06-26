@@ -13,16 +13,16 @@ class NewsLocalDataSourceImpl implements NewsLocalDataSource {
 
   @override
   Future<List<ArticleModel>> getCachedArticles() async {
-    // Ambil data yang tersimpan di lokal Isar database
+    // Membaca data berita yang tersimpan di dalam memori HP
     return await isar.articleModels.where().findAll();
   }
 
   @override
   Future<void> cacheArticles(List<ArticleModel> articles) async {
-    // Simpan data baru ke Isar, hapus cache lama biar ga numpuk
+    // Menyimpan data berita baru ke database Isar secara aman
     await isar.writeTxn(() async {
-      await isar.articleModels.clear();
-      await isar.articleModels.putAll(articles);
+      await isar.articleModels.clear(); // Hapus cache berita lama
+      await isar.articleModels.putAll(articles); // Masukkan berita baru
     });
   }
 }

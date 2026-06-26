@@ -13,17 +13,17 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   @override
   Future<List<ArticleModel>> getTopHeadlines() async {
     try {
-      // Menggunakan endpoint top-headlines sesuai tema DigiNews
+      // Mengambil berita utama dari API lokal/publik
       final response = await dio.get('top-headlines?country=id&apiKey=API_KEY_KAMU');
       
       if (response.statusCode == 200) {
         final List data = response.data['articles'] ?? [];
         return data.map((json) => ArticleModel.fromJson(json)).toList();
       } else {
-        throw Exception('gagal ambil data dari server');
+        throw Exception('gagal mengambil data dari server');
       }
     } catch (e) {
-      throw Exception('error jaringan: $e');
+      throw Exception('terjadi kesalahan jaringan: $e');
     }
   }
 }

@@ -6,35 +6,43 @@ part 'article_model.g.dart';
 class ArticleModel {
   Id id = Isar.autoIncrement;
 
-  @Index(unique: true, replace: true)
-  final String? url;
-
-  final String? title;
-  final String? author;
-  final String? description;
-  final String? urlToImage;
-  final String? publishedAt;
-  final String? content;
+  late String title;
+  late String? description;
+  late String? url;
+  late String? urlToImage;
+  late String? publishedAt;
+  late String? content;
 
   ArticleModel({
-    this.url,
-    this.title,
-    this.author,
+    this.title = '',
     this.description,
+    this.url,
     this.urlToImage,
     this.publishedAt,
     this.content,
   });
 
+  // Fungsi untuk mengubah data dari format JSON API ke objek Dart
   factory ArticleModel.fromJson(Map<String, dynamic> json) {
     return ArticleModel(
-      url: json['url'] as String?,
-      title: json['title'] as String?,
-      author: json['author'] as String?,
-      description: json['description'] as String?,
-      urlToImage: json['urlToImage'] as String?,
-      publishedAt: json['publishedAt'] as String?,
-      content: json['content'] as String?,
+      title: json['title'] ?? '',
+      description: json['description'],
+      url: json['url'],
+      urlToImage: json['urlToImage'],
+      publishedAt: json['publishedAt'],
+      content: json['content'],
     );
+  }
+
+  // Fungsi untuk mengubah kembali objek Dart ke format JSON jika diperlukan
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'url': url,
+      'urlToImage': urlToImage,
+      'publishedAt': publishedAt,
+      'content': content,
+    };
   }
 }

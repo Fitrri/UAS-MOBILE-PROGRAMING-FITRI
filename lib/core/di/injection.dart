@@ -2,8 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uas_mobile_lanjut/features/home/data/models/article_model.dart';
 import '../config/env_config.dart';
+// Jalur relative path baru yang sudah disesuaikan dengan struktur folder yang benar
+import '../../features/home/data/models/article_model.dart';
+import '../../features/home/data/data_sources/news_remote_data_source.dart';
+import '../../features/home/data/data_sources/news_local_data_source.dart';
 
 final locator = GetIt.instance;
 
@@ -23,4 +26,12 @@ Future<void> setupLocator() async {
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
     return dio;
   });
+
+  // 3. Register Data Sources (Remote & Local)
+  locator.registerLazySingleton<NewsRemoteDataSource>(
+    () => NewsRemoteDataSourceImpl(dio: locator()),
+  );
+  locator.registerLazySingleton<NewsLocalDataSource>(
+    () => NewsLocalDataSourceImpl(isar: locator()),
+  );
 }
