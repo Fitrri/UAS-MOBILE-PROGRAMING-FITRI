@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart'; // WAJIB DIIMPORT UNTUK GOROUTER
 import '../../../../core/config/env_config.dart';
 import '../../../../core/di/injection.dart';
 import '../cubit/news_cubit.dart';
@@ -10,19 +11,27 @@ class NewsHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Menentukan warna utama secara dinamis berdasarkan Mode Environment (Syarat Soal Hal 1)
     final Color appBarColor = EnvConfig.isProduction 
-        ? const Color(0xFF0D1B2A) // Biru Gelap untuk PROD
-        : Colors.blueGrey;        // Abu-abu Kebiruan untuk DEV
+        ? const Color(0xFF0D1B2A) 
+        : Colors.blueGrey;        
 
     return BlocProvider(
-      // Mengambil instance NewsCubit dari Dependency Injection GetIt
       create: (_) => locator<NewsCubit>()..fetchNews(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text(EnvConfig.appName), // Menampilkan "DEV - Fitri" atau "UTD - 20123020"
+          title: Text(EnvConfig.appName), 
           backgroundColor: appBarColor,
           elevation: 2,
+          
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.account_circle, size: 28),
+              onPressed: () {
+                GoRouter.of(context).push('/profile');
+              },
+            ),
+            const SizedBox(width: 8),
+          ],
         ),
         body: BlocBuilder<NewsCubit, NewsState>(
           builder: (context, state) {
