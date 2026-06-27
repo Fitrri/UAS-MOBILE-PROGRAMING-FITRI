@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
-import '../../features/home/presentation/pages/home_page.dart';
+// Ganti import lama ke file news_home_page.dart kita yang baru
+import '../../features/home/presentation/pages/news_home_page.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -7,7 +8,8 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const HomePage(),
+        // Builder diubah dari HomePage() menjadi NewsHomePage()
+        builder: (context, state) => const NewsHomePage(),
       ),
     ],
   );
