@@ -11,15 +11,27 @@ class NewsCubit extends Cubit<NewsState> {
   Future<void> fetchNews() async {
     emit(NewsLoading());
     try {
-      // 1. Ambil data berita asli dari internet
+      // 1. Ambil dari internet
       final List<ArticleModel> fetchedArticles = await repository.getNews();
-
-      // 2. LOGIKA NIM AKHIRAN 0: Urutkan berita secara Ascending (A-Z)
+      
+      // Urutkan A-Z
       fetchedArticles.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-
+      
       emit(NewsLoaded(articles: fetchedArticles));
     } catch (e) {
-      emit(NewsError(message: e.toString()));
+      try {
+        // 2. OFFLINE MODE: Jika internet mati, ambil data dari database lokal Isar
+        final List<ArticleModel> localArticles = await repository.getLocalNews();
+        
+        if (localArticles.isNotEmpty) {
+          localArticles.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+          emit(NewsLoaded(articles: localArticles));
+        } else {
+          emit(NewsError(message: "Koneksi internet terputus & database lokal masih kosong."));
+        }
+      } catch (localError) {
+        emit(NewsError(message: "Gagal memuat data: $e"));
+      }
     }
   }
 }

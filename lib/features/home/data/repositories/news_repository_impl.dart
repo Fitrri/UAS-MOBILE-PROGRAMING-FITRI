@@ -13,19 +13,21 @@ class NewsRepositoryImpl implements NewsRepository {
   });
 
   @override
-  Future<List<ArticleModel>> getArticles() async {
-    try {
-      final remoteArticles = await remoteDataSource.getTopHeadlines();
-      await localDataSource.cacheArticles(remoteArticles);
-      
-      // LOGIKA ANTI-AI NIM AKHIRAN 0: Urutkan A-Z (Ascending) berdasarkan Judul
-      remoteArticles.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-      
-      return remoteArticles;
-    } catch (e) {
-      final localArticles = await localDataSource.getCachedArticles();
-      localArticles.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
-      return localArticles;
+  Future<List<ArticleModel>> getNews() async {
+    // Memanggil remote data source (Dio/Internet)
+    final articles = await remoteDataSource.getNews();
+    
+    // Otomatis simpan ke lokal database setelah berhasil ambil dari internet
+    for (var article in articles) {
+      await localDataSource.saveArticle(article);
     }
+    
+    return articles;
+  }
+
+  @override
+  Future<List<ArticleModel>> getLocalNews() async {
+    // Memanggil local data source (Isar DB) saat offline
+    return await localDataSource.getCachedNews();
   }
 }
