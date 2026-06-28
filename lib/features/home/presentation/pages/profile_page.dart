@@ -132,18 +132,22 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
 
-          // OVERLAY LAPISAN ANIMASI LOTTIE (AKAN MEMENUHI LAYAR SELAMA 3 DETIK)
+          // OVERLAY LAPISAN ANIMASI LOTTIE SELEBRASI (DITEMBAK VIA URL INTERNET)
           if (_showLottie)
             Container(
-              color: Colors.black.withOpacity(0.8), // Efek background gelap di belakang animasi
+              color: Colors.black.withOpacity(0.75), // Efek background gelap transparan
               width: double.infinity,
               height: double.infinity,
               child: Center(
-                child: Lottie.asset(
-                  'assets/celebration.json', // Pastikan file json sudah ditaruh di folder assets
-                  width: 300,
-                  height: 300,
+                child: Lottie.network(
+                  'https://assets2.lottiefiles.com/packages/lf20_myej6wbc.json', // URL Animasi Selebrasi Terbaik & Meriah
+                  width: 350,
+                  height: 350,
                   fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    // Fallback aman jika koneksi internet terputus mendadak
+                    return const Icon(Icons.emoji_events, size: 120, color: Colors.amber);
+                  },
                 ),
               ),
             ),
