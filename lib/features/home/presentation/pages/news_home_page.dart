@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart'; // WAJIB DIIMPORT UNTUK GOROUTER
+import 'package:go_router/go_router.dart';
 import '../../../../core/config/env_config.dart';
 import '../../../../core/di/injection.dart';
 import '../cubit/news_cubit.dart';
@@ -22,7 +22,6 @@ class NewsHomePage extends StatelessWidget {
           title: Text(EnvConfig.appName), 
           backgroundColor: appBarColor,
           elevation: 2,
-          
           actions: [
             IconButton(
               icon: const Icon(Icons.account_circle, size: 28),
@@ -49,37 +48,75 @@ class NewsHomePage extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final article = state.articles[index];
                     return Card(
-                      margin: const EdgeInsets.only(bottom: 12),
+                      margin: const EdgeInsets.only(bottom: 16),
                       elevation: 3,
+                      clipBehavior: Clip.antiAlias,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              article.title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 1. TAMPILAN GAMBAR UTAMA DARI API
+                          if (article.urlToImage != null && article.urlToImage!.isNotEmpty)
+                            Image.network(
+                              article.urlToImage!,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 180,
+                                  color: Colors.grey[200],
+                                  child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                                );
+                              },
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  height: 180,
+                                  color: Colors.grey[100],
+                                  child: const Center(child: CircularProgressIndicator()),
+                                );
+                              },
+                            )
+                          else
+                            Container(
+                              height: 180,
+                              width: double.infinity,
+                              color: Colors.blueGrey[50],
+                              child: const Icon(Icons.image, size: 40, color: Colors.grey),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              article.description ?? 'Tidak ada deskripsi berkas.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.grey[700],
-                              ),
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
+
+                          // 2. TAMPILAN TEKS JUDUL DAN DESKRIPSI
+                          Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  article.title,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  article.description ?? 'Tidak ada deskripsi berkas.',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey[700],
+                                  ),
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },

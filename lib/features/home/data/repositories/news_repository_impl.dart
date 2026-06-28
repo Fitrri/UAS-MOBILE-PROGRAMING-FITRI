@@ -14,20 +14,18 @@ class NewsRepositoryImpl implements NewsRepository {
 
   @override
   Future<List<ArticleModel>> getNews() async {
-    // Memanggil remote data source (Dio/Internet)
-    final articles = await remoteDataSource.getNews();
+    // 1. Ambil data asli dari internet via Remote DataSource
+    final articles = await remoteDataSource.getTopHeadlines();
     
-    // Otomatis simpan ke lokal database setelah berhasil ambil dari internet
-    for (var article in articles) {
-      await localDataSource.saveArticle(article);
-    }
+    // 2. Langsung amankan data internet tersebut ke dalam Cache Isar Database
+    await localDataSource.cacheArticles(articles);
     
     return articles;
   }
 
   @override
   Future<List<ArticleModel>> getLocalNews() async {
-    // Memanggil local data source (Isar DB) saat offline
-    return await localDataSource.getCachedNews();
+    // 3. Ambil data cadangan dari Local DataSource (Isar DB) saat offline
+    return await localDataSource.getCachedArticles();
   }
 }

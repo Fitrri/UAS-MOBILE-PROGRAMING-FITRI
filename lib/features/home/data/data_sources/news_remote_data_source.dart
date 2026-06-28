@@ -10,20 +10,20 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
 
   NewsRemoteDataSourceImpl({required this.dio});
 
-  @override
+ @override
   Future<List<ArticleModel>> getTopHeadlines() async {
     try {
-      // Mengambil berita utama dari API lokal/publik
-      final response = await dio.get('top-headlines?country=id&apiKey=API_KEY_KAMU');
+      // Ganti ke endpoint top headlines kategori bisnis/umum agar datanya selalu penuh
+      final response = await dio.get('top-headlines?category=business&apiKey=cc35bccefd0f4841a5176aead5882f87');
       
       if (response.statusCode == 200) {
         final List data = response.data['articles'] ?? [];
         return data.map((json) => ArticleModel.fromJson(json)).toList();
       } else {
-        throw Exception('gagal mengambil data dari server');
+        throw Exception('Gagal mengambil data dari server');
       }
     } catch (e) {
-      throw Exception('terjadi kesalahan jaringan: $e');
+      throw Exception('Terjadi kesalahan jaringan: $e');
     }
   }
 }
