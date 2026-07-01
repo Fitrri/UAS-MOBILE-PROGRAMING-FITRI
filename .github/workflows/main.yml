@@ -20,10 +20,13 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
+    # ⚡ Setup Flutter + Aktifkan Cache Otomatis agar tidak macet/lama
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
+        cache: true
+        cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
 
     - name: Install Dependencies
       run: flutter pub get
@@ -31,10 +34,11 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # 📦 Build APK bersih dengan mematikan fitur daemon agar server tidak macet
+    # 📦 Build APK dengan mematikan daemon agar server fokus rakit file
     - name: Build APK Production
       run: flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release
 
+    # 📤 Unggah Hasil Build ke Artifacts (Untuk rilis)
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
