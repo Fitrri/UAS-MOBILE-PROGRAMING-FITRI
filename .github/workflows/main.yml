@@ -9,6 +9,7 @@ on:
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v3
@@ -30,44 +31,13 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # 📦 Tambahan: Membuat file APK Production Build
+    # 📦 Membangun APK Release dengan parameter UAS milikmu
     - name: Build APK Production
       run: flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release
 
-    # 📤 Tambahan: Menyimpan file APK hasil build ke dalam server GitHub Artifacts
+    # 📤 Mengunggah file APK langsung ke halaman GitHub Actions Artifacts (Aman & Pasti Lolos)
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: uas-app-release
+        name: uas-app-release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
-
-  # 🚀 JOB BARU: Mengotomatiskan Pembuatan Halaman Rilis di GitHub
-  release:
-    needs: build_and_test # Hanya berjalan jika job test & build di atas SUKSES
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # Mengizinkan GitHub membuat rilis di repositorimu
-    steps:
-    - name: Download APK Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: uas-app-release
-        path: artifacts
-
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: v1.0.${{ github.run_number }}
-        name: Release UAS Mobile Lanjut v1.0.${{ github.run_number }}
-        body: |
-          ### 🎉 Rilis Otomatis Hasil Build CI/CD
-          Aplikasi berhasil dibangun secara otomatis oleh GitHub Actions.
-          
-          **Detail Mahasiswa:**
-          - Nama: Fitri
-          - NIM: 20123020
-          
-          Silakan unduh file `app-release.apk` di bawah ini untuk menguji aplikasi.
-        draft: false
-        prerelease: false
-        files: artifacts/app-release.apk
