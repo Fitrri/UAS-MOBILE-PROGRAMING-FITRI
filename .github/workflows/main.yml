@@ -52,16 +52,17 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # 🛠️ PERBAIKAN UTAMA: Kita buat folder penampung terlebih dahulu, 
-    # lalu paksa Flutter menaruh APK langsung ke folder tersebut menggunakan "--output"
+    # Menggunakan perintah standar Flutter yang valid
     - name: Build APK Production
       run: |
-        mkdir -p output_files
-        flutter build apk --release --output=output_files/app-release.apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020
+        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020
 
-    - name: Verify Output Files
+    # Menggeledah seluruh workspace (termasuk folder uas_mobile_lanjut) untuk mencari APK
+    - name: Locate and Collect Artifacts
       run: |
-        echo "=== ISI FOLDER OUTPUT SEBENARNYA ==="
+        mkdir -p output_files
+        find . -name "*.apk" -exec cp {} output_files/ \;
+        echo "=== ISI FOLDER OUTPUT ==="
         ls -l output_files/
 
     - name: Upload Artifacts
