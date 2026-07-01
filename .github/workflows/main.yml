@@ -16,12 +16,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 🛠️ LANGKAH PENYELAMAT: Mengubah setelan SDK langsung di tingkat sistem sebelum build
+    # 🛠️ LANGKAH PENYELAMAT (SUDAH DIPERBAIKI KE SDK 36)
     - name: Force SDK Configuration
       run: |
-        sed -i 's/compileSdk = .*/compileSdk = 35/g' android/app/build.gradle.kts || true
+        sed -i 's/compileSdk = .*/compileSdk = 36/g' android/app/build.gradle.kts || true
         sed -i 's/targetSdk = .*/targetSdk = 35/g' android/app/build.gradle.kts || true
-        sed -i 's/compileSdkVersion .*/compileSdkVersion 35/g' android/app/build.gradle || true
+        sed -i 's/compileSdkVersion .*/compileSdkVersion 36/g' android/app/build.gradle || true
         sed -i 's/targetSdkVersion .*/targetSdkVersion 35/g' android/app/build.gradle || true
 
     - name: Install Dependencies
