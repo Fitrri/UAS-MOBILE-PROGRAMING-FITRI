@@ -7,7 +7,9 @@ plugins {
 
 android {
     namespace = "com.example.uas_mobile_lanjut"
-    compileSdk = flutter.compileSdkVersion
+    
+    // 👑 Diubah ke 34 untuk memperbaiki eror resource android:attr/lStar not found
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -25,7 +27,9 @@ android {
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        
+        // 👑 Diubah ke 34 agar selaras dengan compileSdk dan kompatibel dengan Isar Libs
+        targetSdk = 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
