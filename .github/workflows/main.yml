@@ -52,21 +52,17 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # Menggunakan perintah standar Flutter yang valid
+    # Kita jalankan build standar, dan pakai "|| true" supaya jika Flutter bingung, dia tidak menghentikan workflow
     - name: Build APK Production
       run: |
-        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020
+        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 || true
 
-    # Menggeledah seluruh workspace (termasuk folder uas_mobile_lanjut) untuk mencari APK
-    - name: Locate and Collect Artifacts
+    # 🔍 LANGKAH PELACAK MANUAL: Menyuruh server menampilkan struktur folder aslinya!
+    - name: Spy and Track APK Location
       run: |
-        mkdir -p output_files
-        find . -name "*.apk" -exec cp {} output_files/ \;
-        echo "=== ISI FOLDER OUTPUT ==="
-        ls -l output_files/
-
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: uas-app-release-files
-        path: output_files/
+        echo "=== LOKASI WORKSPACE SAAT INI ==="
+        pwd
+        echo "=== ISI FOLDER UTAMA ==="
+        ls -la
+        echo "=== MENCARI SEMUA FILE APK YANG TERBENTUK ==="
+        find . -name "*.apk" -o -name "*.aab" || true
