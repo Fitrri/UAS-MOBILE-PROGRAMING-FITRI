@@ -12,10 +12,10 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Java
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'zulu'
         java-version: '17'
@@ -31,13 +31,13 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # 📦 Membangun APK Release dengan parameter UAS milikmu
+    # Membangun APK dengan variabel lemparan dari server CI/CD
     - name: Build APK Production
       run: flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release
 
-    # 📤 Mengunggah file APK langsung ke halaman GitHub Actions Artifacts (Aman & Pasti Lolos)
+    # 🚀 Diperbarui ke v4 agar lolos validasi GitHub
     - name: Upload APK Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: uas-app-release-apk
         path: build/app/outputs/flutter-apk/app-release.apk
