@@ -16,8 +16,8 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 🛠️ LANGKAH PENYELAMAT GLOBAL: Memaksa App DAN SEMUA PLUGIN menggunakan SDK 36
-    - name: Force Global SDK Configuration
+    # 🛠️ LANGKAH PENYELAMAT GLOBAL + FIX NAMESPACE
+    - name: Force Global SDK and Namespace Configuration
       run: |
         # 1. Ubah file build.gradle utama aplikasi dulu
         sed -i 's/compileSdk = .*/compileSdk = 36/g' android/app/build.gradle.kts || true
@@ -25,7 +25,7 @@ jobs:
         sed -i 's/compileSdkVersion .*/compileSdkVersion 36/g' android/app/build.gradle || true
         sed -i 's/targetSdkVersion .*/targetSdkVersion 35/g' android/app/build.gradle || true
         
-        # 2. SAKTI: Paksa seluruh plugin/sub-project (termasuk isar) untuk patuh ke SDK 36
+        # 2. SAKTI: Paksa seluruh sub-project patuh ke SDK 36 DAN otomatis buat namespace jika belum ada
         echo "
         subprojects {
             afterEvaluate { project ->
@@ -33,6 +33,18 @@ jobs:
                     project.android {
                         compileSdkVersion = 36
                         buildToolsVersion = '35.0.0'
+                        
+                        // Perbaikan Error: Namespace not specified
+                        if (namespace == null) {
+                            try {
+                                namespace = project.group.toString()
+                                if (namespace.trim().isEmpty() || namespace == 'unspecified') {
+                                    namespace = 'com.fix.isar.' + project.name.replace('-', '.')
+                                }
+                            } catch (Exception e) {
+                                namespace = 'com.fix.isar.' + project.name.replace('-', '.')
+                            }
+                        }
                     }
                 }
             }
