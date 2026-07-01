@@ -1,4 +1,9 @@
-package com.example.uas_mobile_lanjut 
+package com.example.uas_mobile_lanjut
+
+
+import android.content.Context
+import android.widget.Toast
+
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -14,11 +19,11 @@ class MainActivity: FlutterActivity() {
                 val nim = call.argument<String>("nim")
                 
                 if (nim != null) {
-                    // TANTANGAN ANTI-AI: Membalikkan urutan String NIM (Contoh: 20123020 -> 02032102)
+                    // TANTANGAN ANTI-AI: Membalikkan urutan String NIM Anda
                     val reversedNIM = nim.reversed()
                     
                     // Menampilkan hasil pembalikan lewat Native Toast Android
-                    Toast.makeText(this, "NIM Dibalik: $reversedNIM", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this as Context, "NIM Dibalik: $reversedNIM", Toast.LENGTH_LONG).show()
                     
                     // Kembalikan hasilnya ke sisi Dart/Flutter
                     result.success(reversedNIM)
