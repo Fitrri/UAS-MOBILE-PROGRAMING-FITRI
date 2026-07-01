@@ -24,6 +24,15 @@ jobs:
       uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
+        cache: true # ⚡ Menambahkan cache agar proses download dependencies lebih cepat
+
+    # 🔑 LANGKAH KRUSIAL: Menyetujui semua lisensi Android SDK secara otomatis di server
+    - name: Accept Android Licenses
+      run: |
+        mkdir -p ${ANDROID_HOME}/licenses
+        echo -e "\n24333f1a63b6b1f96d3d316267e00a72fa1e37d1" > ${ANDROID_HOME}/licenses/android-sdk-license
+        echo -e "\n8516d471acb7bf7560d27ec4791db747461436c8" > ${ANDROID_HOME}/licenses/android-sdk-preview-license
+        flutter doctor --android-licenses || true
 
     - name: Install Dependencies
       run: flutter pub get
@@ -31,11 +40,10 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # Membangun APK dengan variabel lemparan dari server CI/CD
+    # Membangun APK dengan parameter UAS milikmu
     - name: Build APK Production
       run: flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release
 
-    # 🚀 Diperbarui ke v4 agar lolos validasi GitHub
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
