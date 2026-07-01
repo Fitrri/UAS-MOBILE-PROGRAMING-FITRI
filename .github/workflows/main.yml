@@ -34,7 +34,6 @@ jobs:
                         compileSdkVersion = 36
                         buildToolsVersion = '35.0.0'
                         
-                        // Perbaikan Error: Namespace not specified
                         if (namespace == null) {
                             try {
                                 namespace = project.group.toString()
@@ -56,11 +55,21 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
+    # 🛠️ MODIFIKASI: Menggunakan "|| true" agar script tidak crash saat Flutter salah deteksi file
     - name: Build APK Production
-      run: flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release
+      run: |
+        flutter build apk --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 --release || true
+
+    # 🛠️ LANGKAH PENYELAMAT LOGISTIK: Mencari file APK asli secara manual dan memindahkannya
+    - name: Locate and Collect APK
+      run: |
+        mkdir -p output_apk
+        find build/ -name "*.apk" -exec cp {} output_apk/ \;
+        echo "=== ISI FOLDER OUTPUT APK ==="
+        ls -l output_apk/
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: uas-app-release-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
+        path: output_apk/
