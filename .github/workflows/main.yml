@@ -52,17 +52,14 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # Kita jalankan build standar, dan pakai "|| true" supaya jika Flutter bingung, dia tidak menghentikan workflow
+    # Jalankan build normal (tanpa || true karena kita tahu ini pasti berhasil)
     - name: Build APK Production
       run: |
-        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 || true
+        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020
 
-    # 🔍 LANGKAH PELACAK MANUAL: Menyuruh server menampilkan struktur folder aslinya!
-    - name: Spy and Track APK Location
-      run: |
-        echo "=== LOKASI WORKSPACE SAAT INI ==="
-        pwd
-        echo "=== ISI FOLDER UTAMA ==="
-        ls -la
-        echo "=== MENCARI SEMUA FILE APK YANG TERBENTUK ==="
-        find . -name "*.apk" -o -name "*.aab" || true
+    # 🛠️ KUNCI UTAMA: Kita langsung tembak rute gaib yang kita temukan tadi!
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: uas-app-release-apk
+        path: android/app/build/outputs/flutter-apk/app-release.apk
