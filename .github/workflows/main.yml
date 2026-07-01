@@ -16,13 +16,27 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    # 🛠️ LANGKAH PENYELAMAT (SUDAH DIPERBAIKI KE SDK 36)
-    - name: Force SDK Configuration
+    # 🛠️ LANGKAH PENYELAMAT GLOBAL: Memaksa App DAN SEMUA PLUGIN menggunakan SDK 36
+    - name: Force Global SDK Configuration
       run: |
+        # 1. Ubah file build.gradle utama aplikasi dulu
         sed -i 's/compileSdk = .*/compileSdk = 36/g' android/app/build.gradle.kts || true
         sed -i 's/targetSdk = .*/targetSdk = 35/g' android/app/build.gradle.kts || true
         sed -i 's/compileSdkVersion .*/compileSdkVersion 36/g' android/app/build.gradle || true
         sed -i 's/targetSdkVersion .*/targetSdkVersion 35/g' android/app/build.gradle || true
+        
+        # 2. SAKTI: Paksa seluruh plugin/sub-project (termasuk isar) untuk patuh ke SDK 36
+        echo "
+        subprojects {
+            afterEvaluate { project ->
+                if (project.hasProperty('android')) {
+                    project.android {
+                        compileSdkVersion = 36
+                        buildToolsVersion = '35.0.0'
+                    }
+                }
+            }
+        }" >> android/build.gradle
 
     - name: Install Dependencies
       run: flutter pub get
