@@ -52,14 +52,28 @@ jobs:
     - name: Run Automated Tests
       run: flutter test
 
-    # Jalankan build normal (tanpa || true karena kita tahu ini pasti berhasil)
     - name: Build APK Production
       run: |
-        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020
+        flutter build apk --release --dart-define=ENV_NAME=PROD --dart-define=NAMA_DEPAN=Fitri --dart-define=NIM_ANDA=20123020 || true
 
-    # 🛠️ KUNCI UTAMA: Kita langsung tembak rute gaib yang kita temukan tadi!
+    # 🛠️ STRATEGI GABUNGAN: Kita salin dari jalur laptop DAN jalur server sekaligus!
+    - name: Collect APK From All Possible Paths
+      run: |
+        mkdir -p output_apk
+        
+        # 1. Coba salin dari jalur server yang kita temukan tadi
+        cp android/app/build/outputs/flutter-apk/app-release.apk output_apk/main-release.apk || true
+        cp android/app/build/outputs/apk/release/app-release.apk output_apk/alt-release.apk || true
+        
+        # 2. Coba salin dari jalur luar (sejajar android) seperti di laptopmu
+        cp build/app/outputs/apk/release/app-release.apk output_apk/local-release.apk || true
+        cp build/app/outputs/flutter-apk/app-release.apk output_apk/local-alt-release.apk || true
+        
+        echo "=== VERIFIKASI FILE APK YANG BERHASIL DIAMANKAN ==="
+        ls -l output_apk/
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: uas-app-release-apk
-        path: android/app/build/outputs/flutter-apk/app-release.apk
+        path: output_apk/
